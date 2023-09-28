@@ -1,18 +1,20 @@
 # HayerDebayer
- 
+
 This is a set of basic tools to work with Hayer HY-6110 .RAW still images.
 
 The .RAW format of the HY-6110 can be accessed by changing the Image Format setting in the camera to JPEG+RAW.
 
 The .RAW files are incredibly basic, they are 12-bit packed raw sensor dumps, without any debayering or seemingly any denoising or similar. The resolution is 3840x2160.
 
-I made a set of tools to work with these images.
+I made a set of tools to work with these images, the results are not perfect but are a dramatic improvement to achievable image quality. Below a comparison of the camera JPEG's and a basic ACR processed RAW file is shown.
+
+![](assets/20230928_233930_Comparison.jpg)
 
 convert.py uses OpenCV to read in the packed 12 bit format and try to convert it to a 16-bit TIFF format including debayering. This tool is interesting but will likely not be maintained as the .DNG method is much more practical for photographic purposes.
 
 hayerdng.py uses PiDNG to read the packed 12 bit data and store it as a 16 bit linear DNG file that can be read in using e.g. Adobe Camera RAW or Lightroom.
 
-This tool uses a set of (hard coded) colour correction matrix with two calibration temperatures made using a Macbeth chart at 6500 K and approximately 3000 K. 
+This tool uses a set of (hard coded) colour correction matrix with two calibration temperatures made using a Macbeth chart at 6500 K and approximately 3000 K.
 
 It takes no arguments and converts any .RAW file in it's current working directory into a .DNG file, overwriting any existing files.
 
