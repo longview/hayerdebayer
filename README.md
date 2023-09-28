@@ -4,7 +4,7 @@ This is a set of basic tools to work with Hayer HY-6110 .RAW still images.
 
 The .RAW format of the HY-6110 can be accessed by changing the Image Format setting in the camera to JPEG+RAW.
 
-The .RAW files are incredibly basic, they are 12-bit packed raw sensor dumps, without any debayering or seemingly any denoising or similar. The resolution is 3840x2160.
+The .RAW files are incredibly basic, they are 12-bit packed raw sensor dumps, without any debayering or seemingly any denoising or similar, or headers for that matter. The resolution is 3840x2160.
 
 I made a set of tools to work with these images, the results are not perfect but are a dramatic improvement to achievable image quality. Below a comparison of the camera JPEG's and a basic ACR processed RAW file is shown.
 
