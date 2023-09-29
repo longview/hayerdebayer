@@ -22,7 +22,7 @@ The tool embeds a set of (hard coded) colour correction matrices for two calibra
 
 It takes no arguments and converts any .RAW file in it's current working directory into a .DNG file, overwriting any existing files.
 
-The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) and copied into the source code. The source files were *cal_reference_5500k.RAW* (5500 K) and *cal_reference_warm.RAW* (~3000 K).
+The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) to convert them to XMP format. These XMP files are then converted to JSON arrays in parsexmp.py. The source files were *cal_reference_5500k.RAW* (5500 K) and *cal_reference_warm.RAW* (~3000 K).
 
 The HueSat profiles are used, the effect is relatively subtle (compared to the CCM's!):
 
