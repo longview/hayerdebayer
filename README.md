@@ -14,7 +14,7 @@ I made two tools to work with these images, the results are not perfect but are 
 
 `hayerdng.py` uses PiDNG to read the packed 12 bit data and store it as a 16 bit linear DNG file that can be read in using e.g. Adobe Camera RAW or Lightroom.
 
-`parsexmp.y` is used to parse the generated .xmp profiles converted from the DNG Profile Creator DCP files. It extracts the CCM's, tonecurves (only read from cold profile), and the HueSat tables for the two reference colour temperatures. These are read by hayerdng.py and embedded in the .DNG files.
+`parsexmp.py` is used to parse the generated .xmp profiles converted from the DNG Profile Creator DCP files. It extracts the CCM's, tonecurves (only read from cold profile), and the HueSat tables for the two reference colour temperatures. These are read by hayerdng.py and embedded in the .DNG files.
 
 Required Python modules: `PiDNG` (use latest GitHub, not pip), `numpy`, and `OpenCV2`. The OpenCV part is only used for image rotation currently and could in principle be removed.
 
