@@ -20,18 +20,21 @@ The tool embeds a set of (hard coded) colour correction matrices for two calibra
 
 It takes no arguments and converts any .RAW file in it's current working directory into a .DNG file, overwriting any existing files.
 
-The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) and copied into the source code. The source files were *20230928_164557.RAW* (6500 K) and *20230928_164654.RAW* (3000 K).
+The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) and copied into the source code. The source files were *cal_reference_6500k.RAW* (6500 K) and *cal_reference_warm.RAW* (3000 K).
+
+A TODO: is to also add the DNG Profile colour correction parameters, this is a big pile of data that realistically needs to be imported programmatically. The error caused by this vs. the effort required to include it favours ignoring this issue for now.
 
 Note that the PiDNG sample code at the time of writing will not produce a standards compliant .DNG. dng_validate was used to detect and correct these issues to make something ACR will accept. The validation tool is quite useful when making changes.
 
 Currently the major issues are:
 
-1. The JPEG previews in the .DNG files are not corrected (not major)
-2. ACR doesn't correctly detect the white balance of the camera, thinking the image is much warmer than it actually is.E.g. a RAW file at 3000 K must be processed as approximately 5800 K with a heavy purple tint to make the white balance look right.
+1. idk what I'm doing
+2. (Resolved?) The JPEG previews in the .DNG files are not corrected (not major)
+3. (Somewhat resolved) ACR doesn't correctly detect the white balance of the camera, thinking the image is much warmer than it actually is.E.g. a RAW file at 3000 K must be processed as approximately 5800 K with a heavy purple tint to make the white balance look right.
 
-I *believe* this WB error is caused by incorrect ForwardMatrix1/2 entries. The current set is copied from the PiDNG source code for one of the Pi cameras and is not correct for this camera, but works better than leaving them out (without them the WB error was larger, and the saturation was very poor). From what I know there is enough data here to calculate appropriate matrices but I haven't gotten around to it yet.
+These errors seem to be corrected by generating a CameraCalibration matrix, this matrix currently just attenuates the green response (tuned manually).
 
-To work around this I loaded up the two reference images in ACR and white balanced off the chart then saved those as presets for use as baselines for outdoors and indoor settings. It is also advisable to configure other parameters like CA removal at this time, but those are lens specific so you will have to make your own.
+To work around the residual error I loaded up the two reference images in ACR and white balanced off the chart then saved those as presets for use as baselines for outdoors and indoor settings. It is also advisable to configure other parameters like CA removal at this time, but those are lens specific so you will have to make your own.
 
 ## Microphone Noise
 
@@ -111,4 +114,3 @@ Language                                 : English
 A USB-C to USB 3.0 A cable is included (many USB-C cables are too wide to fit the narrow camera cutout by the way).
 
 When connected the camera works as a 4k30 capable webcam with monoaural audio, I haven't really tested it.
-

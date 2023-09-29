@@ -28,9 +28,9 @@ print(ccm_6500k)'''
 ccm_6500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
 ccm_3200k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
 
-camera_calibration = [[1, 1], [0, 1], [0, 1],
-                              [0, 1], [1, 1], [0, 1],
-                              [0, 1], [0, 1], [1, 1]]
+camera_calibration = [[10, 10], [0, 10], [0, 10],
+                              [0, 10], [153, 100], [0, 10],
+                              [0, 10], [0, 10], [10, 10]]
 # these are lifted elsewhere, should really be calculated
 fm1 = [[7889, 10000], [1273, 10000], [482, 10000],
         [2401, 10000], [9705, 10000], [-2106, 10000],
@@ -90,7 +90,7 @@ for file in glob.glob("*.RAW"):
     t.set(Tag.CameraCalibration2, camera_calibration)
     t.set(Tag.CalibrationIlluminant1, CalibrationIlluminant.Tungsten_Incandescent)
     t.set(Tag.CalibrationIlluminant2, CalibrationIlluminant.D65)
-    t.set(Tag.AsShotNeutral, [[1,1],[1,1],[1,1]])
+    t.set(Tag.AsShotNeutral, camera_calibration)
     t.set(Tag.BaselineExposure, [[-150,100]])
     t.set(Tag.Make, "HY-6110")
     t.set(Tag.Model, "Hayear")
