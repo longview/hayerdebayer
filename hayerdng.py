@@ -12,9 +12,6 @@ absolute_path = os.path.dirname(__file__)
 width = 3840
 height = 2160
 bpp= 16
-# calculated using the above commented out code
-#ccm_5500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
-#ccm_3000k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
 
 with open(os.path.join(absolute_path, 'calibration/ccm_warm.json'), 'r') as filehandle:
     ccm_3000k = json.load(filehandle)
@@ -24,7 +21,8 @@ with open(os.path.join(absolute_path, 'calibration/ccm_cold.json'), 'r') as file
 with open(os.path.join(absolute_path, 'calibration/tonecurve.json'), 'r') as filehandle:
     tonecurve = json.load(filehandle)
 
-# these are manually weaked to make the two reference images look ok
+# these are manually tweaked to make the two reference images look ok
+# when opened in ACR with the default white-balance
 camera_calibration_3000k = [[178, 100], [0, 10], [0, 10],
                               [0, 10], [200, 100], [0, 10],
                               [0, 10], [0, 10], [118, 100]]
@@ -88,6 +86,7 @@ for file in glob.glob("*.RAW"):
     t.set(Tag.CameraCalibration2, camera_calibration_3000k)
     t.set(Tag.CalibrationIlluminant1, CalibrationIlluminant.D55)
     t.set(Tag.CalibrationIlluminant2, CalibrationIlluminant.Standard_Light_A)
+    # skipping this is allowed but not recommended – but we have no white-balancer so kind of have to!
     #t.set(Tag.AsShotNeutral, camera_calibration)
     t.set(Tag.BaselineExposure, [[-150,100]])
     t.set(Tag.Make, "Hayear")
@@ -97,7 +96,7 @@ for file in glob.glob("*.RAW"):
     t.set(Tag.PreviewColorSpace, PreviewColorSpace.sRGB)
     t.set(Tag.PhotographicSensitivity, [100]) 
     t.set(Tag.ExposureTime, [[1,30]])  
-    profile_name = "PiDNG / HY-6110 Profile"
+    profile_name = "PiDNG / hayerdebayer / HY-6110 Profile"
     profile_embed = 3
     t.set(Tag.ProfileName, profile_name)
     t.set(Tag.ProfileEmbedPolicy, [profile_embed])
