@@ -57,12 +57,12 @@ with open("reference_photos/20230928_164654.RAW", "rb") as rawimg:
 cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
     # scale to 16-bit normalized
-    gamma_img = np.round(normalized_img * 65535).astype(np.uint16)
+    #gamma_img = np.round(normalized_img * 65535).astype(np.uint16)
 
     # TODO: colour correction stuff here
 
     # rotate image
-    image = cv2.rotate(gamma_img, cv2.ROTATE_180)
+    image = cv2.rotate(normalized_img, cv2.ROTATE_180)
     # set 16-bit TIFF mode
     image = cv2.cvtColor(image, cv2.CV_16U)
     # write image
