@@ -3,30 +3,26 @@ from pidng.defs import *
 import numpy as np
 import struct
 import cv2
-from xml.dom import minidom
+import json
+import os
+
+absolute_path = os.path.dirname(__file__)
 
 # image specs
 width = 3840
 height = 2160
 bpp= 16
-
-'''import xml.etree.ElementTree as ET
-tree_w = ET.parse('HY-6110_3200k.xmp')
-root_w = tree_w.getroot()
-tree_d = ET.parse('HY-6110_6500k.xmp')
-root_d = tree_d.getroot()
-
-ccm_3000k = [[int(float(root_w[3][8].text)*10000), 10000], [int(float(root_w[3][7].text)*10000), 10000], [int(float(root_w[3][6].text)*10000), 10000],	
-        [int(float(root_w[3][5].text)*10000), 10000], [int(float(root_w[3][4].text)*10000), 10000], [int(float(root_w[3][3].text)*10000), 10000],
-        [int(float(root_w[3][2].text)*10000), 10000], [ int(float(root_w[3][1].text)*10000), 10000], [ int(float(root_w[3][0].text)*10000), 10000]]
-ccm_5500k = [[int(float(root_d[3][8].text)*10000), 10000], [int(float(root_d[3][7].text)*10000), 10000], [int(float(root_d[3][6].text)*10000), 10000],	
-        [int(float(root_d[3][5].text)*10000), 10000], [int(float(root_d[3][4].text)*10000), 10000], [int(float(root_d[3][3].text)*10000), 10000],
-        [int(float(root_d[3][2].text)*10000), 10000], [ int(float(root_d[3][1].text)*10000), 10000], [ int(float(root_d[3][0].text)*10000), 10000]]
-print(ccm_3000k)
-print(ccm_5500k)'''
 # calculated using the above commented out code
-ccm_5500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
-ccm_3000k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
+#ccm_5500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
+#ccm_3000k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
+
+with open(os.path.join(absolute_path, 'calibration/ccm_warm.json'), 'r') as filehandle:
+    ccm_3000k = json.load(filehandle)
+with open(os.path.join(absolute_path, 'calibration/ccm_cold.json'), 'r') as filehandle:
+    ccm_5500k = json.load(filehandle)
+
+with open(os.path.join(absolute_path, 'calibration/tonecurve.json'), 'r') as filehandle:
+    tonecurve = json.load(filehandle)
 
 # these are manually weaked to make the two reference images look ok
 camera_calibration_3000k = [[178, 100], [0, 10], [0, 10],
@@ -35,14 +31,12 @@ camera_calibration_3000k = [[178, 100], [0, 10], [0, 10],
 camera_calibration_5500k = [[135, 100], [0, 10], [0, 10],
                               [0, 10], [229, 100], [0, 10],
                               [0, 10], [0, 10], [191, 100]]
-# these are lifted elsewhere, should really be calculated
-fm1 = [[7889, 10000], [1273, 10000], [482, 10000],
-        [2401, 10000], [9705, 10000], [-2106, 10000],
-        [-26, 10000], [-4406, 10000], [12683, 10000]]
 
-fm2 = [[6591, 10000], [3034, 10000], [18, 10000],
-        [1991, 10000], [10585, 10000], [-2575, 10000],
-        [-493, 10000], [-919, 10000], [9663, 10000]]
+# load the huesats
+with open(os.path.join(absolute_path,'calibration/warm_huesat.json'), 'r') as filehandle:
+    huesat_3000k = json.load(filehandle)
+with open(os.path.join(absolute_path,'calibration/cold_huesat.json'), 'r') as filehandle:
+    huesat_5500k = json.load(filehandle)
 
 import glob, os
 for file in glob.glob("*.RAW"):
@@ -65,8 +59,8 @@ for file in glob.glob("*.RAW"):
     result[0::2] = ((data[1::3] &  15) << 8) | data[0::3]
     result[1::2] = (data[1::3] >> 4) | (data[2::3] << 4)
     rawImage = np.reshape(result, (height, width))
-    
-    rawImage = cv2.rotate(rawImage, cv2.ROTATE_180)
+    #rawImage = cv2.cvtColor(rawImage, cv2.COLOR_BAYER_RGGB2RGB)
+    #rawImage = cv2.rotate(rawImage, cv2.ROTATE_180)
     #rawImage = rawImage.astype(np.float32)/4096
     rawImage = rawImage * 16
     #rawImage = rawImage >> (16 - bpp)
@@ -77,15 +71,15 @@ for file in glob.glob("*.RAW"):
     #t.set(Tag.TileWidth, width)
     #t.set(Tag.TileLength, height)
     t.set(Tag.RowsPerStrip, height)
-    t.set(Tag.Orientation, Orientation.Horizontal)
+    t.set(Tag.Orientation, Orientation.Rotate180)
     t.set(Tag.PhotometricInterpretation, PhotometricInterpretation.Color_Filter_Array)
     t.set(Tag.SampleFormat, SampleFormat.Uint)
     t.set(Tag.SamplesPerPixel, 1)
     t.set(Tag.BitsPerSample, bpp)
     t.set(Tag.CFARepeatPatternDim, [2,2])
-    t.set(Tag.CFAPattern, CFAPattern.BGGR)
-    t.set(Tag.BlackLevel, 0)
-    t.set(Tag.WhiteLevel, ((1 << bpp) -1) )
+    t.set(Tag.CFAPattern, CFAPattern.RGGB)
+    #t.set(Tag.BlackLevel, 0)
+    #t.set(Tag.WhiteLevel, ((1 << bpp) -1) )
     t.set(Tag.ColorMatrix1, ccm_5500k)
     t.set(Tag.ColorMatrix2, ccm_3000k)
     #t.set(Tag.ForwardMatrix1, fm1)
@@ -96,8 +90,8 @@ for file in glob.glob("*.RAW"):
     t.set(Tag.CalibrationIlluminant2, CalibrationIlluminant.Standard_Light_A)
     #t.set(Tag.AsShotNeutral, camera_calibration)
     t.set(Tag.BaselineExposure, [[-150,100]])
-    t.set(Tag.Make, "HY-6110")
-    t.set(Tag.Model, "Hayear")
+    t.set(Tag.Make, "Hayear")
+    t.set(Tag.Model, "HY-6110")
     t.set(Tag.DNGVersion, DNGVersion.V1_4)
     t.set(Tag.DNGBackwardVersion, DNGVersion.V1_2)
     t.set(Tag.PreviewColorSpace, PreviewColorSpace.sRGB)
@@ -107,6 +101,10 @@ for file in glob.glob("*.RAW"):
     profile_embed = 3
     t.set(Tag.ProfileName, profile_name)
     t.set(Tag.ProfileEmbedPolicy, [profile_embed])
+    t.set(Tag.ProfileHueSatMapDims, [90, 25, 1])
+    t.set(Tag.ProfileHueSatMapData1, huesat_5500k)
+    t.set(Tag.ProfileHueSatMapData2, huesat_3000k)
+    t.set(Tag.ProfileToneCurve, tonecurve)
     t.set(Tag.NewSubfileType, 0)
     t.set(Tag.UniqueCameraModel, "HY-6110")
 

@@ -1,12 +1,12 @@
 # HayerDebayer
 
-This is a set of basic tools to work with Hayer HY-6110 .RAW still images.
+This is a few tools to work with Hayer HY-6110 .RAW still images.
 
 The .RAW format of the HY-6110 can be accessed by changing the Image Format setting in the camera to JPEG+RAW.
 
 The .RAW files are incredibly basic, they are 12-bit packed raw sensor dumps, without any debayering or seemingly any denoising or similar, or headers for that matter. The resolution is 3840x2160.
 
-I made a set of tools to work with these images, the results are not perfect but are a dramatic improvement to achievable image quality. Below a comparison of the camera JPEG's and a basic ACR processed RAW file is shown.
+I made two tools to work with these images, the results are not perfect but are a dramatic improvement to achievable image quality. Below a comparison of the camera JPEG's and a basic ACR processed RAW file is shown.
 
 ![](assets/20230928_233930_Comparison.jpg)
 
@@ -14,7 +14,9 @@ I made a set of tools to work with these images, the results are not perfect but
 
 `hayerdng.py` uses PiDNG to read the packed 12 bit data and store it as a 16 bit linear DNG file that can be read in using e.g. Adobe Camera RAW or Lightroom.
 
-`PiDNG` (use latest GitHub, not pip), `numpy`, and `OpenCV2` are required. The OpenCV part is only used for image rotation currently and could in principle be removed.
+`parsexmp.y` is used to parse the generated .xmp profiles converted from the DNG Profile Creator DCP files. It extracts the CCM's, tonecurves (only read from cold profile), and the HueSat tables for the two reference colour temperatures. These are read by hayerdng.py and embedded in the .DNG files.
+
+Required Python modules: `PiDNG` (use latest GitHub, not pip), `numpy`, and `OpenCV2`. The OpenCV part is only used for image rotation currently and could in principle be removed.
 
 The tool embeds a set of (hard coded) colour correction matrices for two calibration temperatures made using a Macbeth chart at 6500 K and approximately 3000 K.
 
@@ -22,7 +24,9 @@ It takes no arguments and converts any .RAW file in it's current working directo
 
 The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) and copied into the source code. The source files were *cal_reference_5500k.RAW* (5500 K) and *cal_reference_warm.RAW* (~3000 K).
 
-A TODO: is to also add the DNG Profile colour correction parameters, this is a big pile of data that realistically needs to be imported programmatically. The error caused by this vs. the effort required to include it favours ignoring this issue for now.
+The HueSat profiles are used, the effect is relatively subtle (compared to the CCM's!):
+
+![](assets/20230929_224345_huesat_comparison_copy.jpg)
 
 Note that the PiDNG sample code at the time of writing will not produce a standards compliant .DNG. dng_validate was used to detect and correct these issues to make something ACR will accept. The validation tool is quite useful when making changes.
 
@@ -35,6 +39,10 @@ Currently the major issues are:
 These errors seem to be corrected by generating a CameraCalibration1/2 matrix, this matrix was tweaked by opening the DNG in ACR and adjusting until the default view was correct for warm/white light.
 
 To work around the residual error I loaded up the two reference images in ACR and white balanced off the chart then saved those as presets for use as baselines for outdoors and indoor settings. It is also advisable to configure other parameters like CA removal at this time, but those are lens specific so you will have to make your own.
+
+TODO's:
+
+* It seems like OpenCV may have a better debayer than ACR? Try to make the conversion tool do debayering before DNG conversion.
 
 ## Microphone Noise
 
