@@ -19,8 +19,10 @@ def lin2rgb(im):
     srgb[im <= bp] = sls * im[im <= bp]
     srgb[im > bp] = np.power(fs*im[im > bp], inv_g) - co
     return srgb
-
-with open("reference_photos/20230928_164654.RAW", "rb") as rawimg:
+# 6500 K image
+with open("reference_photos/20230928_164557.RAW", "rb") as rawimg:
+# 3200 K image
+#with open("reference_photos/20230928_164654.RAW", "rb") as rawimg:
     # Read the packed 12bits as bytes - each 3 bytes applies 2 pixels
     data = np.fromfile(rawimg, np.uint8, width * height * 3//2)
 
@@ -46,11 +48,14 @@ with open("reference_photos/20230928_164654.RAW", "rb") as rawimg:
     ccm_identity = np.array([ [ 1, 0, 0],
                      [0,  1, 0], 
                      [0,  0,  0] ])
+    ccm_test_6500k = np.array([ [ 1.5445, -0.493, -0.1174],
+                     [0.0192,  0.8682, 0.1374], 
+                     [-0.0653,  0.0124,  0.5655] ])    
     ccm_test1 = np.array([ [ 1.047806, 0.022888, -0.050110],
                      [0.029541,  0.990479, -0.017029], 
                      [-0.009216,  0.015045,  0.752136] ])
     lin_img = lin_img.astype(np.float32).reshape((lin_img.shape[0] * lin_img.shape[1], 3))
-    colourcorrected_img = np.matmul(lin_img, ccm_test1)  
+    colourcorrected_img = np.matmul(lin_img, ccm_test_6500k)  
     colourcorrected_img = colourcorrected_img.reshape(rgb.shape).astype(colourcorrected_img.dtype)
 
     normalized_img = cv2.normalize(colourcorrected_img, None, 0, 1.0,

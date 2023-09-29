@@ -3,21 +3,31 @@ from pidng.defs import *
 import numpy as np
 import struct
 import cv2
+from xml.dom import minidom
 
 # image specs
 width = 3840
 height = 2160
 bpp= 16
 
+'''import xml.etree.ElementTree as ET
+tree_w = ET.parse('HY-6110_3200k.xmp')
+root_w = tree_w.getroot()
+tree_d = ET.parse('HY-6110_6500k.xmp')
+root_d = tree_d.getroot()
 
+ccm_3200k = [[int(float(root_w[3][8].text)*10000), 10000], [int(float(root_w[3][7].text)*10000), 10000], [int(float(root_w[3][6].text)*10000), 10000],	
+        [int(float(root_w[3][5].text)*10000), 10000], [int(float(root_w[3][4].text)*10000), 10000], [int(float(root_w[3][3].text)*10000), 10000],
+        [int(float(root_w[3][2].text)*10000), 10000], [ int(float(root_w[3][1].text)*10000), 10000], [ int(float(root_w[3][0].text)*10000), 10000]]
+ccm_6500k = [[int(float(root_d[3][8].text)*10000), 10000], [int(float(root_d[3][7].text)*10000), 10000], [int(float(root_d[3][6].text)*10000), 10000],	
+        [int(float(root_d[3][5].text)*10000), 10000], [int(float(root_d[3][4].text)*10000), 10000], [int(float(root_d[3][3].text)*10000), 10000],
+        [int(float(root_d[3][2].text)*10000), 10000], [ int(float(root_d[3][1].text)*10000), 10000], [ int(float(root_d[3][0].text)*10000), 10000]]
+print(ccm_3200k)
+print(ccm_6500k)'''
 
-# uncalibrated color matrix, just for demo. 
-ccm1 = [[22100, 10000], [-8907, 10000], [-2920, 10000],	
-        [-6472, 10000], [11444, 10000], [2168, 10000],
-        [-1433, 10000], [ -124, 10000], [ 7487, 10000]]
-ccm2 = [[15445, 10000], [-4930, 10000], [-1174, 10000],	
-        [192, 10000], [8682, 10000], [1374, 10000],
-        [-653, 10000], [ 124, 10000], [ 5655, 10000]]
+ccm_6500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
+ccm_3200k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
+
 camera_calibration = [[1, 1], [0, 1], [0, 1],
                               [0, 1], [1, 1], [0, 1],
                               [0, 1], [0, 1], [1, 1]]
@@ -51,6 +61,7 @@ for file in glob.glob("*.RAW"):
     result[0::2] = ((data[1::3] &  15) << 8) | data[0::3]
     result[1::2] = (data[1::3] >> 4) | (data[2::3] << 4)
     rawImage = np.reshape(result, (height, width))
+    
     rawImage = cv2.rotate(rawImage, cv2.ROTATE_180)
     #rawImage = rawImage.astype(np.float32)/4096
     rawImage = rawImage * 16
@@ -71,13 +82,13 @@ for file in glob.glob("*.RAW"):
     t.set(Tag.CFAPattern, CFAPattern.BGGR)
     t.set(Tag.BlackLevel, 0)
     t.set(Tag.WhiteLevel, ((1 << bpp) -1) )
-    t.set(Tag.ColorMatrix1, ccm1)
-    t.set(Tag.ColorMatrix1, ccm2)
-    t.set(Tag.ForwardMatrix1, fm1)
-    t.set(Tag.ForwardMatrix2, fm2)
+    t.set(Tag.ColorMatrix1, ccm_3200k)
+    t.set(Tag.ColorMatrix1, ccm_6500k)
+    #t.set(Tag.ForwardMatrix1, fm1)
+    #t.set(Tag.ForwardMatrix2, fm2)
     t.set(Tag.CameraCalibration1, camera_calibration)
     t.set(Tag.CameraCalibration2, camera_calibration)
-    t.set(Tag.CalibrationIlluminant1, CalibrationIlluminant.Warm_White_Fluorescent)
+    t.set(Tag.CalibrationIlluminant1, CalibrationIlluminant.Tungsten_Incandescent)
     t.set(Tag.CalibrationIlluminant2, CalibrationIlluminant.D65)
     t.set(Tag.AsShotNeutral, [[1,1],[1,1],[1,1]])
     t.set(Tag.BaselineExposure, [[-150,100]])

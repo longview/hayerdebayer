@@ -10,7 +10,7 @@ I made a set of tools to work with these images, the results are not perfect but
 
 ![](assets/20230928_233930_Comparison.jpg)
 
-`convert.py` uses OpenCV to read in the packed 12 bit format and try to convert it to a 16-bit TIFF format including debayering but in linear RGB.
+`convert.py` uses OpenCV to read in the packed 12 bit format and try to convert it to a 16-bit TIFF format including debayering but in linear RGB. This is basically a test-program that is modified as needed to e.g. compute colour matrices for the DNG converter.
 
 `hayerdng.py` uses PiDNG to read the packed 12 bit data and store it as a 16 bit linear DNG file that can be read in using e.g. Adobe Camera RAW or Lightroom.
 
