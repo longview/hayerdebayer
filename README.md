@@ -20,7 +20,7 @@ The tool embeds a set of (hard coded) colour correction matrices for two calibra
 
 It takes no arguments and converts any .RAW file in it's current working directory into a .DNG file, overwriting any existing files.
 
-The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) and copied into the source code. The source files were *cal_reference_6500k.RAW* (6500 K) and *cal_reference_warm.RAW* (3000 K).
+The correction matrices were made using Adobe DNG Profile Editor, the exported .dcp files were then read out using dcpTool (MacOS binary included) and copied into the source code. The source files were *cal_reference_5500k.RAW* (5500 K) and *cal_reference_warm.RAW* (~3000 K).
 
 A TODO: is to also add the DNG Profile colour correction parameters, this is a big pile of data that realistically needs to be imported programmatically. The error caused by this vs. the effort required to include it favours ignoring this issue for now.
 
@@ -32,7 +32,7 @@ Currently the major issues are:
 2. (Resolved?) The JPEG previews in the .DNG files are not corrected (not major)
 3. (Somewhat resolved) ACR doesn't correctly detect the white balance of the camera, thinking the image is much warmer than it actually is.E.g. a RAW file at 3000 K must be processed as approximately 5800 K with a heavy purple tint to make the white balance look right.
 
-These errors seem to be corrected by generating a CameraCalibration matrix, this matrix currently just attenuates the green response (tuned manually).
+These errors seem to be corrected by generating a CameraCalibration1/2 matrix, this matrix was tweaked by opening the DNG in ACR and adjusting until the default view was correct for warm/white light.
 
 To work around the residual error I loaded up the two reference images in ACR and white balanced off the chart then saved those as presets for use as baselines for outdoors and indoor settings. It is also advisable to configure other parameters like CA removal at this time, but those are lens specific so you will have to make your own.
 

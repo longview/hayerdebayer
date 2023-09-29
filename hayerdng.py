@@ -16,19 +16,23 @@ root_w = tree_w.getroot()
 tree_d = ET.parse('HY-6110_6500k.xmp')
 root_d = tree_d.getroot()
 
-ccm_3200k = [[int(float(root_w[3][8].text)*10000), 10000], [int(float(root_w[3][7].text)*10000), 10000], [int(float(root_w[3][6].text)*10000), 10000],	
+ccm_3000k = [[int(float(root_w[3][8].text)*10000), 10000], [int(float(root_w[3][7].text)*10000), 10000], [int(float(root_w[3][6].text)*10000), 10000],	
         [int(float(root_w[3][5].text)*10000), 10000], [int(float(root_w[3][4].text)*10000), 10000], [int(float(root_w[3][3].text)*10000), 10000],
         [int(float(root_w[3][2].text)*10000), 10000], [ int(float(root_w[3][1].text)*10000), 10000], [ int(float(root_w[3][0].text)*10000), 10000]]
-ccm_6500k = [[int(float(root_d[3][8].text)*10000), 10000], [int(float(root_d[3][7].text)*10000), 10000], [int(float(root_d[3][6].text)*10000), 10000],	
+ccm_5500k = [[int(float(root_d[3][8].text)*10000), 10000], [int(float(root_d[3][7].text)*10000), 10000], [int(float(root_d[3][6].text)*10000), 10000],	
         [int(float(root_d[3][5].text)*10000), 10000], [int(float(root_d[3][4].text)*10000), 10000], [int(float(root_d[3][3].text)*10000), 10000],
         [int(float(root_d[3][2].text)*10000), 10000], [ int(float(root_d[3][1].text)*10000), 10000], [ int(float(root_d[3][0].text)*10000), 10000]]
-print(ccm_3200k)
-print(ccm_6500k)'''
+print(ccm_3000k)
+print(ccm_5500k)'''
+# calculated using the above commented out code
+ccm_5500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
+ccm_3000k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
 
-ccm_6500k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
-ccm_3200k = [[15445, 10000], [-4930, 10000], [-1174, 10000], [191, 10000], [8682, 10000], [1374, 10000], [-653, 10000], [1245, 10000], [5655, 10000]]
-
-camera_calibration = [[135, 100], [0, 10], [0, 10],
+# these are manually weaked to make the two reference images look ok
+camera_calibration_3000k = [[178, 100], [0, 10], [0, 10],
+                              [0, 10], [200, 100], [0, 10],
+                              [0, 10], [0, 10], [118, 100]]
+camera_calibration_5500k = [[135, 100], [0, 10], [0, 10],
                               [0, 10], [229, 100], [0, 10],
                               [0, 10], [0, 10], [191, 100]]
 # these are lifted elsewhere, should really be calculated
@@ -82,15 +86,15 @@ for file in glob.glob("*.RAW"):
     t.set(Tag.CFAPattern, CFAPattern.BGGR)
     t.set(Tag.BlackLevel, 0)
     t.set(Tag.WhiteLevel, ((1 << bpp) -1) )
-    t.set(Tag.ColorMatrix1, ccm_3200k)
-    t.set(Tag.ColorMatrix1, ccm_6500k)
+    t.set(Tag.ColorMatrix1, ccm_5500k)
+    t.set(Tag.ColorMatrix2, ccm_3000k)
     #t.set(Tag.ForwardMatrix1, fm1)
     #t.set(Tag.ForwardMatrix2, fm2)
-    t.set(Tag.CameraCalibration1, camera_calibration)
-    t.set(Tag.CameraCalibration2, camera_calibration)
-    t.set(Tag.CalibrationIlluminant1, CalibrationIlluminant.Tungsten_Incandescent)
-    t.set(Tag.CalibrationIlluminant2, CalibrationIlluminant.D65)
-    t.set(Tag.AsShotNeutral, camera_calibration)
+    t.set(Tag.CameraCalibration1, camera_calibration_5500k)
+    t.set(Tag.CameraCalibration2, camera_calibration_3000k)
+    t.set(Tag.CalibrationIlluminant1, CalibrationIlluminant.D55)
+    t.set(Tag.CalibrationIlluminant2, CalibrationIlluminant.Standard_Light_A)
+    #t.set(Tag.AsShotNeutral, camera_calibration)
     t.set(Tag.BaselineExposure, [[-150,100]])
     t.set(Tag.Make, "HY-6110")
     t.set(Tag.Model, "Hayear")
