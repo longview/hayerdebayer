@@ -28,6 +28,10 @@ The HueSat profiles are used, the effect is relatively subtle (compared to the C
 
 ![](assets/20230929_224345_huesat_comparison_copy.jpg)
 
+For easier comparison:
+
+![](assets/20230929_233331_huesat_comparison2_copy.jpg)
+
 Note that the PiDNG sample code at the time of writing will not produce a standards compliant .DNG. dng_validate was used to detect and correct these issues to make something ACR will accept. The validation tool is quite useful when making changes.
 
 Currently the major issues are:
