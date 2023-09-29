@@ -60,4 +60,4 @@ for i in range(int(root_d[12].get('Size'))):
     toneCurve.append(float(root_d[12][i].get('v')))
 
 with open('calibration/tonecurve.json', 'w') as filehandle:
-    json.dump(hueSatDeltas_d, filehandle)
+    json.dump(toneCurve, filehandle)

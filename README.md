@@ -44,6 +44,63 @@ TODO's:
 
 * It seems like OpenCV may have a better debayer than ACR? Try to make the conversion tool do debayering before DNG conversion.
 
+Here is the exiftool output for the currently generated files:
+
+```ExifTool Version Number         : 12.60
+File Name                       : cal_reference_5500k.dng
+Directory                       : .
+File Size                       : 17 MB
+File Modification Date/Time     : 2023:09:29 22:46:59+02:00
+File Access Date/Time           : 2023:09:29 22:47:28+02:00
+File Inode Change Date/Time     : 2023:09:29 22:47:04+02:00
+File Permissions                : -rw-r--r--
+File Type                       : DNG
+File Type Extension             : dng
+MIME Type                       : image/x-adobe-dng
+Exif Byte Order                 : Little-endian (Intel, II)
+Subfile Type                    : Full-resolution image
+Image Width                     : 3840
+Image Height                    : 2160
+Bits Per Sample                 : 16
+Compression                     : Uncompressed
+Photometric Interpretation      : Color Filter Array
+Make                            : Hayear
+Camera Model Name               : HY-6110
+Strip Offsets                   : 54924
+Orientation                     : Rotate 180
+Samples Per Pixel               : 1
+Rows Per Strip                  : 2160
+Strip Byte Counts               : 16588800
+Software                        : PiDNG
+Sample Format                   : Unsigned
+CFA Repeat Pattern Dim          : 2 2
+CFA Pattern 2                   : 0 1 1 2
+Exposure Time                   : 1/30
+ISO                             : 100
+DNG Version                     : 1.4.0.0
+DNG Backward Version            : 1.2.0.0
+Unique Camera Model             : HY-6110
+Color Matrix 1                  : 1.5445 -0.493 -0.1174 0.0191 0.8682 0.1374 -0.0653 0.1245 0.5655
+Color Matrix 2                  : 1.5445 -0.493 -0.1174 0.0191 0.8682 0.1374 -0.0653 0.1245 0.5655
+Camera Calibration 1            : 1.35 0 0 0 2.29 0 0 0 1.91
+Camera Calibration 2            : 1.78 0 0 0 2 0 0 0 1.18
+Baseline Exposure               : -1.5
+Calibration Illuminant 1        : D55
+Calibration Illuminant 2        : Standard Light A
+Profile Name                    : PiDNG / HY-6110 Profile
+Profile Hue Sat Map Dims        : 90 25 1
+Profile Hue Sat Map Data 1      : (Binary data 80482 bytes, use -b option to extract)
+Profile Hue Sat Map Data 2      : (Binary data 80086 bytes, use -b option to extract)
+Profile Tone Curve              : (Binary data 189 bytes, use -b option to extract)
+Profile Embed Policy            : No Restrictions
+Preview Color Space             : sRGB
+CFA Pattern                     : [Red,Green][Green,Blue]
+Image Size                      : 3840x2160
+Megapixels                      : 8.3
+Shutter Speed                   : 1/30
+
+```
+
 ## Microphone Noise
 
 The HY-6110 microphone input pinout is not documented:
