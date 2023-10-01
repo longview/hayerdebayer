@@ -42,6 +42,12 @@ files.sort()
 for file in files:
     try:
         newfile = os.path.splitext(file)[0] + '.dng'
+
+        # TODO: make this the default but allow an argument to disable
+        if os.path.exists(newfile):
+            print('Skipping file ' + file + ' due to existence of ' + newfile)
+            continue
+
         print('Processing file ' + file + ' to ' + newfile)
         # load raw data into 16-bit numpy array.
         numPixels = width*height
@@ -115,7 +121,6 @@ for file in files:
         r.options(t, path="", compress=False)
         r.convert(rawImage, filename=newfile)
     except Exception as error:
-        print(type(error))    # the exception type
-        print(error.args)     # arguments stored in .args
         print(error)
+        print('Source file: ' + file + ' (size: ' + str(os.path.getsize(file)) +' bytes) appears corrupted!')
 
